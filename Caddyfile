@@ -1,0 +1,43 @@
+{
+	email {$ACME_EMAIL}
+	log {
+		output stdout
+		format console
+		level INFO
+	}
+}
+
+# -----------------------------
+# DNS-first (trusted cert)
+# Requires:
+# - TLS_MODE=dns
+# - LESSON_HOSTNAME set (e.g., lessons.example.com)
+# - DNS token set for your provider (Cloudflare example)
+# -----------------------------
+{$LESSON_HOSTNAME} {
+	@use_dns expression `{env.TLS_MODE} == "dns"`
+	tls @use_dns {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+	}
+
+	# If TLS_MODE isn't dns, this hostname block won't be used anyway.
+
+	reverse_proxy webui:3000
+}
+
+# -----------------------------
+# mkcert localhost fallback
+# Used when:
+# - TLS_MODE=mkcert OR LESSON_HOSTNAME is empty
+# This serves https://localhost only (bind controlled by CADDY_BIND_IP=127.0.0.1)
+# -----------------------------
+:443 {
+	@use_mkcert expression `{env.TLS_MODE} == "mkcert" || "{env.LESSON_HOSTNAME}" == ""`
+	tls @use_mkcert {$MKCERT_CERT} {$MKCERT_KEY}
+
+	# Only accept localhost hostnames in fallback mode
+	@localhost host localhost 127.0.0.1
+	respond !@localhost 403
+
+	reverse_proxy webui:3000
+}
