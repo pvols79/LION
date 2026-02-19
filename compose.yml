@@ -1,0 +1,39 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: lesson_ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - lesson_net
+    # No ports published; engine talks to it internally at http://ollama:11434
+
+  engine:
+    build:
+      context: ./engine
+    container_name: lesson_engine
+    restart: unless-stopped
+    environment:
+      - MODEL_RUNNER=${MODEL_RUNNER:-ollama}
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - BIBLE_PROVIDER=${BIBLE_PROVIDER:-reference-only}
+      - ESV_API_KEY=${ESV_API_KEY:-}
+      - OUTPUT_DIR=/output
+      - OUTPUT_FORMAT_DEFAULT=${OUTPUT_FORMAT_DEFAULT:-md}
+      - ENGINE_HTTP_PORT=8080
+    volumes:
+      - ./output:/output
+      - ./prompts:/app/prompts:ro
+      - ./config:/app/config:ro
+    depends_on:
+      - ollama
+    networks:
+      - lesson_net
+
+volumes:
+  ollama_data:
+
+networks:
+  lesson_net:
+    name: lesson_net
