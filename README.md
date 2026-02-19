@@ -7,12 +7,31 @@ Until recently, I was using commercial generative pre-trained transformers (GPTs
 
 Commerical models require subscriptons. For single users, there are affordable pricing options, but some developers might prefer to have an option that allows them to pay up front and use the models as much as they want. There is certainly a trade-off to consider. L.I.O.N. offers curriculum developers a subscription-free option to utilize artificial intelligence (AI) with no recurring subscription costs.
 
-What L.I.O.N. is:
+**What L.I.O.N. is:**
 
 Pre-packaged solution based on Docker images which installs the necessary software to host a specific large language model, perform conversation-driven lesson development with the LLM, and tools necessary to call functions that pull in Bible text as needed for your use case. Engineered prompts are provided free of charge, but users are able to create new or modify existing prompts as needed to fit their specific use case.
 
-What L.I.O.N. is NOT:
+**What L.I.O.N. is NOT:**
 
 A large language model (LLM) - As a matter of fact, L.I.O.N. does not provide models. It provides the UI to interface with a chosen model. The intention is to allow users to choose models, although the project has been built around, and tested on, a specific Llama 3.1 8B model.
 
 An AI Bible. L.I.O.N. is not a Bible implemented in AI. It is a tool to utilize artificial intelligence through the use of large language models to structure and create lesson plans based on exegetical analysis.
+
+**GPU guidance**
+	•	Runs CPU-only (slow).
+	•	Recommended: NVIDIA RTX 4060+ with 8GB VRAM for best performance.
+	•	For NVIDIA GPU in Docker: install NVIDIA Container Toolkit, then:
+
+  ./up.sh --gpu-nvidia
+
+  or ./up.sh --web --gpu-nvidia
+
+**Why Cloudflare API token**
+
+Because DNS-01 needs the ACME client to create a TXT record automatically. Users can use Cloudflare or any supported DNS provider; Cloudflare is the documented default.
+
+**WebUI**
+
+Localhost default + optional LAN/WAN
+	•	If user sets LESSON_HOSTNAME, WebUI can be served on LAN/WAN over trusted HTTPS.
+	•	If not set, it falls back to localhost-only HTTPS using mkcert.
