@@ -1,0 +1,29 @@
+{
+	email {$ACME_EMAIL}
+	log {
+		output stdout
+		format console
+		level INFO
+	}
+}
+
+# DNS-first: trusted cert for LESSON_HOSTNAME via Cloudflare DNS-01
+{$LESSON_HOSTNAME} {
+	@use_dns expression `{env.TLS_MODE} == "dns"`
+	tls @use_dns {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+	}
+
+	reverse_proxy webui:3000
+}
+
+# mkcert fallback: https://localhost only
+:443 {
+	@use_mkcert expression `{env.TLS_MODE} == "mkcert" || "{env.LESSON_HOSTNAME}" == ""`
+	tls @use_mkcert {$MKCERT_CERT} {$MKCERT_KEY}
+
+	@localhost host localhost 127.0.0.1
+	respond !@localhost 403
+
+	reverse_proxy webui:3000
+}
