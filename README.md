@@ -143,7 +143,7 @@ engine/README.md
 
 Clone the repository:
 
-git clone https://github.com/YOURNAME/lion.git
+git clone https://github.com/pvols79/lion.git
 cd lion
 
 Start platform:
