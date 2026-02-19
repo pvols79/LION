@@ -1,0 +1,55 @@
+services:
+  webui:
+    build:
+      context: ./webui
+    container_name: lesson_webui
+    restart: unless-stopped
+    environment:
+      - ENGINE_BASE_URL=http://engine:8080
+    depends_on:
+      - engine
+    networks:
+      - lesson_net
+    # Not exposed directly; only behind Caddy.
+
+  caddy:
+    image: caddy:2
+    container_name: lesson_caddy
+    restart: unless-stopped
+
+    # DNS-first mode uses 80/443 for LAN/WAN access.
+    # mkcert fallback binds to localhost only using port mapping IPs.
+    # We'll let up.sh decide which compose file fragment to use by setting env vars.
+    ports:
+      - "${CADDY_BIND_IP:-0.0.0.0}:80:80"
+      - "${CADDY_BIND_IP:-0.0.0.0}:443:443"
+
+    environment:
+      - LESSON_HOSTNAME=${LESSON_HOSTNAME:-}
+      - ACME_EMAIL=${ACME_EMAIL:-}
+
+      # DNS provider token (Cloudflare example)
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN:-}
+
+      # TLS mode:
+      # - dns (default) -> Let’s Encrypt via DNS-01
+      # - mkcert -> use local cert files mounted below
+      - TLS_MODE=${TLS_MODE:-dns}
+
+      # Paths inside container for mkcert cert/key
+      - MKCERT_CERT=/certs/localhost.pem
+      - MKCERT_KEY=/certs/localhost-key.pem
+
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./certs:/certs:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - webui
+    networks:
+      - lesson_net
+
+volumes:
+  caddy_data:
+  caddy_config:
