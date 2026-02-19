@@ -1,77 +1,177 @@
 # L.I.O.N.
 ## Learn • Interpret • Outline • Nurture
 
-**L.I.O.N.** is an AI-assisted Bible lesson development platform designed for teachers and curriculum developers who want to use local large language models (LLMs) to assist in lesson preparation while maintaining control over accuracy, formatting, and theological tone.
+**L.I.O.N.** is an AI-assisted Bible lesson development platform designed for teachers, pastors, and curriculum developers who want to use local large language models (LLMs) to create structured, exegetical lesson material grounded in Scripture.
+
+The project was born from a practical need: developing Bible lessons with AI while maintaining **accuracy, theological clarity, formatting control, and trustworthiness of Scripture**.
 
 ---
 
-## Overview
+## Why L.I.O.N. Exists
 
-L.I.O.N. provides a local, subscription-free alternative to commercial generative AI platforms for developing structured Bible lesson materials.
+Many curriculum developers are beginning to experiment with commercial generative AI tools. While powerful, these platforms introduce several challenges:
 
-Many curriculum developers experimenting with generative AI encounter challenges such as:
+- Subscription costs
+- Limited formatting control
+- Difficulty enforcing structured lesson output
+- Scripture hallucination or paraphrasing
+- Lack of transparency in model behavior
 
-- maintaining doctrinal accuracy
-- preserving teaching tone
-- enforcing consistent formatting
-- preventing hallucinated Scripture text
+L.I.O.N. provides an alternative:
 
-This project grew out of a personal desire to run a **local AI model** dedicated specifically to lesson preparation.
+- Run AI **locally**
+- Maintain control over prompts and workflow
+- Integrate Scripture retrieval safely
+- Produce repeatable, structured lesson plans
 
-Commercial AI platforms can be helpful but often require recurring subscriptions and extensive verification of generated Scripture. L.I.O.N. combines local AI execution, engineered prompts, and controlled Scripture retrieval to provide a structured workflow designed to assist faithful teaching.
-
----
-
-## What L.I.O.N. *Is*
-
-- A **Docker-based platform** for running local AI lesson generation
-- A structured workflow for Bible lesson development
-- A prompt-driven lesson compiler
-- A secure interface between LLMs and Scripture sources
-- A customizable prompt system
-- A local-first AI environment with no subscription required
+This platform enables AI assistance **without requiring recurring subscriptions**.
 
 ---
 
-## What L.I.O.N. *Is NOT*
+## What L.I.O.N. Is
 
-### Not a Large Language Model
-L.I.O.N. does **not** distribute AI models.  
-Users download models independently using Ollama.
+L.I.O.N. is a **pre-packaged platform** built using Docker that provides:
 
-### Not an AI Bible
-L.I.O.N. does not replace Scripture or interpret Scripture authoritatively.  
-It is a tool that assists lesson development using structured prompts and user-provided Bible sources.
+- Local LLM orchestration
+- Structured lesson generation workflows
+- Engineered prompts for expository lesson creation
+- Bible text retrieval integration
+- CLI and optional WebUI interfaces
+- Exportable lesson formats (DOCX, Markdown, TXT)
 
-### Not a Scripture Distributor
-L.I.O.N. does not ship copyrighted Bible translations.  
-Users supply their own licensed access where required.
+Users may customize prompts or create their own workflows.
 
 ---
 
-## Hardware Requirements
+## What L.I.O.N. Is NOT
 
-### Minimum
-- Modern CPU
-- 16GB RAM
-- CPU inference supported (slow)
+**L.I.O.N. is NOT a Large Language Model.**
 
-### Recommended
-- NVIDIA RTX 4060 or newer
-- 8GB VRAM minimum
-- 32GB system RAM recommended
+No models are distributed with this project. Users select and download models independently.
 
-GPU acceleration significantly improves lesson generation speed.
+**L.I.O.N. is NOT an AI Bible.**
+
+It does not replace Scripture or interpret Scripture authoritatively. It is a tool assisting lesson preparation using user-chosen AI models.
+
+---
+
+## Hardware Guidance
+
+L.I.O.N. can run CPU-only, but performance will be slow.
+
+Recommended hardware:
+
+- NVIDIA RTX 4060 or better
+- Minimum 8GB VRAM
+- 16–32GB system RAM recommended
+
+GPU acceleration dramatically improves lesson generation speed.
 
 ---
 
 ## GPU Setup (NVIDIA)
 
-Install NVIDIA Container Toolkit:
+Install NVIDIA Container Toolkit, then start L.I.O.N. with GPU support:
 
-https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html
-
-Start with GPU acceleration:
-
-```bash
 ./up.sh --gpu-nvidia
+
+or with WebUI:
+
+./up.sh --web --gpu-nvidia
+
+---
+
+## HTTPS by Default
+
+L.I.O.N. always serves the WebUI over HTTPS.
+
+Two modes are supported:
+
+### 1. Cloudflare DNS-01 (Default)
+
+Used when exposing L.I.O.N. on LAN or WAN.
+
+Requires:
+- Domain name
+- Cloudflare DNS
+- Cloudflare API token
+
+The system automatically validates domain ownership using ACME DNS challenges.
+
+### 2. Localhost Fallback (mkcert)
+
+If no domain is configured:
+
+- Generates trusted local certificates
+- Works securely on localhost
+- No Internet exposure required
+
+---
+
+## Bible Text Providers
+
+L.I.O.N. supports multiple Scripture modes.
+
+### Reference-Only Mode (Default)
+No API key required. Lessons include references without quoted text.
+
+### ESV API Mode
+Requires a personal API key from Crossway.
+
+Users must provide their own key. The key is never distributed with this project.
+
+---
+
+## Open Platform, Proprietary Engine
+
+This repository contains the open L.I.O.N. platform:
+
+- deployment
+- configuration
+- interfaces
+- tooling
+
+The lesson-generation engine is distributed separately as prebuilt binaries.
+
+See:
+
+engine/README.md
+
+---
+
+## Quick Start
+
+Clone the repository:
+
+git clone https://github.com/YOURNAME/lion.git
+cd lion
+
+Start platform:
+
+./up.sh
+
+Start with WebUI:
+
+./up.sh --web
+
+---
+
+## Philosophy
+
+L.I.O.N. exists to assist faithful teaching — not replace it.
+
+AI can help structure ideas, summarize themes, and organize lessons, but Scripture remains the authority. Every generated lesson should be reviewed prayerfully and carefully by the teacher.
+
+---
+
+## License
+
+Platform code is released under the Apache-2.0 License.
+
+Models, Bible texts, and proprietary engine components are governed by their respective licenses.
+
+---
+
+## Disclaimer
+
+L.I.O.N. generates educational material using AI. Users are responsible for verifying theological accuracy and Scripture usage.
